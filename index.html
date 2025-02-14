@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Hari Valentine</title>
+    <style>
+        body {
+            background-color: rgb(192, 196, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+        .heart {
+            color: red;
+            font-size: 50px;
+            animation: heartbeat 1s infinite alternate;
+        }
+        @keyframes heartbeat {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: red;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100px); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Selamat Hari Valentine Sayangku ❤️</h1>
+        <p>Gapapa ikut ikutan dikit hehehe. 💖</p>
+
+        <p id="question">Galak Coklat?</p>
+        <button class="button" onclick="answerYes()">Ya</button>
+        <button class="button" onclick="answerNo()">Tidak</button>
+        <p id="response" style="font-weight: bold; color: red; display: none;"></p>
+
+        <div class="heart">❤</div>
+        <button class="button" onclick="showMessage()">Klik Aku!</button>
+        <p id="message" style="display: none; font-weight: bold; color: rgb(0, 0, 0);">ILoveYouuu sayangku yang cantik banget banget bangetttt 💕<br>
+        Sini Peluk nga cium Muachhhhh 😘😘</p>
+    </div>
+    
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-hearts');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 2 + 's'; // Durasi konsisten
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+        setInterval(createHeart, 500);
+        
+        function showMessage() {
+            document.getElementById('message').style.display = 'block';
+        }
+        
+        function answerYes() {
+            document.getElementById('response').innerText = "Yay! kele ngguk balik ku belikah 🍫❤️";
+            document.getElementById('response').style.display = 'block';
+            sendToTelegram("Jawaban: Ya");
+        }
+        
+        function answerNo() {
+            document.getElementById('response').innerText = "Yakin dkgalak? coklat kecik saje ah 💕";
+            document.getElementById('response').style.display = 'block';
+            sendToTelegram("Jawaban: Tidak");
+        }
+
+        const BOT_TOKEN = "7621118144:AAHGfdKRStE5-0MBQm-Nsgz0ilfX3rsC1C8";
+        const CHAT_ID = "5336726671"; // Ganti dengan chat ID yang benar
+
+        function sendToTelegram(message) {
+            let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            let params = {
+                chat_id: CHAT_ID,
+                text: message, // Pastikan ada teks pesan
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(params),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log("Pesan terkirim:", data);
+                } else {
+                    console.error("Error dari Telegram:", data);
+                }
+            })
+            .catch(error => console.error("Error mengirim pesan:", error));
+        }
+    </script>
+</body>
+</html>
